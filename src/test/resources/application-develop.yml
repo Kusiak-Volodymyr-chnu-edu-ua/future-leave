@@ -1,0 +1,9 @@
+org.sample.web:
+      enable_production_mode: false
+      jwt:
+        jwtKey: d5sdf54fd
+        accessTokenExpirationInMinutes: 15
+        refreshTokenExpirationInMinutes: 20160
+spring.config.import:
+  - classpath:application-develop.yml
+  - classpath:application-h2.yml

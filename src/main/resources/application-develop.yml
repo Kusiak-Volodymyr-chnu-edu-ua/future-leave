@@ -1,0 +1,11 @@
+useSwagger: true
+
+org.sample.web:
+      enable_production_mode: false
+      jwt:
+        jwtKey: asdaffgdf
+        accessTokenExpirationInMinutes: 1500
+        refreshTokenExpirationInMinutes: 20160
+
+springdoc.swagger-ui.enabled: true
+springdoc.swagger-ui.path: /swagger-ui.html

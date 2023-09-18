@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    driverClassName: org.postgresql.Driver
+  jpa:
+    hibernate:
+     ddl-auto: none
+     format-sql: true
+     dialect: org.hibernate.dialect.PostgreSQLDialect

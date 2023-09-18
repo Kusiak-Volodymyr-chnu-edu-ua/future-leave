@@ -1,0 +1,47 @@
+info.app.name: Web
+info.app.description: web
+info.app.version: '@web.version@'
+
+
+spring:
+  profiles:
+    active: "@spring.profiles.active@"
+  jpa:
+    open-in-view: false
+    properties:
+      hibernate:
+        globally_quoted_identifiers: false
+        use_sql_comments: true
+        order_inserts: true
+        order_updates: true
+        batch_versioned_data: true
+        jdbc:
+          batch_size: 5
+          time_zone: UTC
+    show-sql: false
+  batch:
+    initialize-schema: always
+    job:
+      names: none
+      enabled: false
+  jackson:
+    serialization:
+      INDENT_OUTPUT: true
+
+org.sample.web:
+      enable_production_mode: true
+      items:
+        maxСount: 100
+      jwt:
+        jwtKey: 54645645465drtyhfh
+        accessTokenExpirationInMinutes: 15
+        refreshTokenExpirationInMinutes: 20160
+
+#actuator properties
+management.info.git.enabled: true
+management.info.git.mode: simple
+management.info.build.enabled: true
+management.endpoints.health.show-details: never
+management.endpoints.web.base-path: /
+management.endpoints.web.exposure.include: health,info
+
