@@ -8,21 +8,17 @@ import org.springframework.stereotype.Service;
 import com.voltor.futureleave.dao.AbstractIdentifiableDao;
 import com.voltor.futureleave.dao.RefreshTokenDao;
 import com.voltor.futureleave.dao.specification.EqualSpecification;
-import com.voltor.futureleave.model.AuthData;
 import com.voltor.futureleave.model.RefreshToken;
+import com.voltor.futureleave.model.User;
 import com.voltor.futureleave.service.exception.RefreshTokenNotFoundException;
 
 @Service
-public class RefreshTokenService extends AbstractService<RefreshToken> {
+public class RefreshTokenService extends AbstractUserTenencyService<RefreshToken> {
 
 	@Autowired
 	private RefreshTokenDao refreshTokenDao;
-
-	@Autowired
-	private AuthenticatedUserService userAuthorizationService;
 	
-	@Autowired
-	private AuthDataService authDataService;
+ 
 
 	@Override
 	protected AbstractIdentifiableDao<RefreshToken> getDao() {
@@ -35,20 +31,14 @@ public class RefreshTokenService extends AbstractService<RefreshToken> {
 		refreshToken.setExpiringDate( expiringDate );
 		return super.create( refreshToken );
 	}
-	
-	@Override
-	protected void beforeCreate( RefreshToken refreshToken ) {
-		refreshToken.setSessionId( userAuthorizationService.getSessionId() );
-		super.beforeCreate( refreshToken );
-	}
-
-	public AuthData getTokenData(String refreshToken) {
+	 
+	public User getTokenData(String refreshToken) {
 		RefreshToken token = getOne(new EqualSpecification<>("token", refreshToken));
 		if (token == null) {
 			throw new RefreshTokenNotFoundException();
 		}
 		delete( token.getId() );
-		return authDataService.findSessionId( token.getSessionId() );
+		return token.getUser();
 	}
 
 	public void delete(String refreshToken) {

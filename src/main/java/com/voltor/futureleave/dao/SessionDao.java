@@ -30,8 +30,4 @@ public class SessionDao extends AbstractIdentifiableDao<Session> {
 		return userAuthorizationService.isRoot();
 	}
 	
-
-	public Session getDefaultSession() {
-		return sessionRepository.findAll().iterator().next();
-	}
 }

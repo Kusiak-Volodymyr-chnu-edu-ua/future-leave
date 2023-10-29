@@ -9,7 +9,7 @@ public class SessionRequest extends AbstractRequest<Session> {
 	
 	@Override
 	public Session createEntity() {
-		return new Session();
+		return updateEntity( new Session() );
 	}
 
 	@Override

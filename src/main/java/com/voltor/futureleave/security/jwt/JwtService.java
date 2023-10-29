@@ -64,7 +64,7 @@ public class JwtService {
 	}
 
 	public String generateAccessToken() {
-		return generateToken( userAuthorizationService.getSessionId().toString(),
+		return generateToken( userAuthorizationService.getCurrentUser().getLogin(),
 				expirationDate( accessTokenExpirationInMinutes ) );
 	}
 
@@ -107,7 +107,7 @@ public class JwtService {
 
 	public UserDetails getUserDetailsByJwt( String jwtKey ) {
 		String subject = getSubject( jwtKey );
-		return userDetailsService.loadSessionUserBySessionId( Long.valueOf(subject) );
+		return userDetailsService.loadUserByUsername( subject );
 	}
 
 	public String getSubject( String jwt ) {

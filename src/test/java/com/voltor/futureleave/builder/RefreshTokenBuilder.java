@@ -3,9 +3,13 @@ package com.voltor.futureleave.builder;
 import java.time.ZonedDateTime;
 import java.util.concurrent.ThreadLocalRandom;
 
+import org.springframework.stereotype.Component;
+
 import com.voltor.futureleave.model.RefreshToken;
+import com.voltor.futureleave.model.User;
 import com.voltor.futureleave.service.DateTimeService;
 
+@Component
 public class RefreshTokenBuilder {
 
 	private RefreshToken refreshToken;
@@ -19,6 +23,10 @@ public class RefreshTokenBuilder {
 		initDefaultData();
 		return token;
 	}
+	
+	public RefreshToken buildNew() {
+		return setId(null).build();
+	}
 
 	private void initDefaultData() {
 		refreshToken = new RefreshToken();
@@ -26,15 +34,20 @@ public class RefreshTokenBuilder {
 		refreshToken.setId( randomValue );
 		refreshToken.setToken( "SomeToken" + randomValue );
 		refreshToken.setExpiringDate( DateTimeService.now().plusDays(2) );
-		refreshToken.setSessionId( randomValue );
+		refreshToken.setUser( UserBuilder.start().build() );
 	}
 	
 	public static RefreshTokenBuilder start() {
     	return new RefreshTokenBuilder();
 	}
-
-	public RefreshTokenBuilder setSessionId( Long sessionId ) {
-		refreshToken.setSessionId( sessionId );
+	
+	public RefreshTokenBuilder setId( Long id ) {
+		refreshToken.setId( id );
+		return this;
+	}
+	
+	public RefreshTokenBuilder setUser( User user ) {
+		refreshToken.setUser( user );
 		return this;
 	}
 

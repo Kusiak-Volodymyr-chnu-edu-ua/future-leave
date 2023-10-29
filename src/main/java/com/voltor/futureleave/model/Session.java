@@ -20,7 +20,6 @@ public class Session extends SessionTenencyEntity implements Identifiable {
 	@Column(nullable = true)
 	private String name;
 	
-	
 	@Override
 	public Long getId() {
 		return id;
@@ -38,6 +37,7 @@ public class Session extends SessionTenencyEntity implements Identifiable {
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	@Override
 	public boolean equals( Object o ) {
 		if ( this == o )

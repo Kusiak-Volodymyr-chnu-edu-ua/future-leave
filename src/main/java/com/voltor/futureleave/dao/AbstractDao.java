@@ -20,15 +20,14 @@ import com.voltor.futureleave.dao.specification.SubclassEqualSpecification;
 import com.voltor.futureleave.filtering.predicate.EqualStringSpecification;
 import com.voltor.futureleave.filtering.session.ArchivedSpecification;
 import com.voltor.futureleave.filtering.session.IdSpecification;
-import com.voltor.futureleave.filtering.session.SessionSpecification;
 import com.voltor.futureleave.jpa.PrimaryRepository;
 import com.voltor.futureleave.localization.LocalizedExceptionCode;
 import com.voltor.futureleave.localization.LocalizedMessage;
 import com.voltor.futureleave.model.Archivable;
 import com.voltor.futureleave.model.Identifiable;
+import com.voltor.futureleave.model.PrimaryEntity;
 import com.voltor.futureleave.model.Session;
 import com.voltor.futureleave.model.SessionTenencyEntity;
-import com.voltor.futureleave.model.PrimaryEntity;
 import com.voltor.futureleave.service.AuthenticatedUserService;
 import com.voltor.futureleave.service.exception.RetrievalNotAllowedException;
 
@@ -334,9 +333,9 @@ public abstract class AbstractDao<IdType, T extends PrimaryEntity<IdType>> {
 	 */
 	public T create(T entity) {
 
-		if (userAuthorizationService.isSupport() && entity instanceof SessionTenencyEntity) {
-			((SessionTenencyEntity) entity).setSessionId(userAuthorizationService.getSessionId());
-		}
+//		if (userAuthorizationService.isSupport() && entity instanceof SessionTenencyEntity) {
+//			((SessionTenencyEntity) entity).setSessionId( userAuthorizationService.getSessionId() );
+//		}
 
 		return getRepository().save(entity);
 	}
@@ -413,9 +412,9 @@ public abstract class AbstractDao<IdType, T extends PrimaryEntity<IdType>> {
 		}
 
 		if ( entityIsExtendedBySession() ) {
-			Long currentSession = userAuthorizationService.getSessionId();
-			SessionSpecification< T > sessionSpecification = new SessionSpecification<>( currentSession );
-			specification = specification.and( sessionSpecification );
+//			Long currentSession = userAuthorizationService.getSessionId();
+//			SessionSpecification< T > sessionSpecification = new SessionSpecification<>( currentSession );
+//			specification = specification.and( sessionSpecification );
 		}
 
 		if ( !includeArchivedEntities && entityIsArchived() ) {

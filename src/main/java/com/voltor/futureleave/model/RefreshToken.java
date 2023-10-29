@@ -13,7 +13,7 @@ import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "refresh_token")
-public class RefreshToken extends SessionTenencyEntity implements Identifiable{
+public class RefreshToken extends UserTenencyEntity implements Identifiable{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

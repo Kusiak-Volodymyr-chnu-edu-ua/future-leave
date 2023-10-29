@@ -39,11 +39,11 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import com.voltor.futureleave.api.v1.authentication.AuthenticationController;
 import com.voltor.futureleave.api.v1.authentication.AuthenticationResponse;
 import com.voltor.futureleave.api.v1.exception.ExceptionsHandler;
-import com.voltor.futureleave.builder.AuthDataBuilder;
 import com.voltor.futureleave.builder.AuthenticatedUserBuilder;
+import com.voltor.futureleave.builder.UserBuilder;
 import com.voltor.futureleave.config.SpringSecurityConfig;
-import com.voltor.futureleave.model.AuthData;
 import com.voltor.futureleave.model.Role;
+import com.voltor.futureleave.model.User;
 import com.voltor.futureleave.security.AuthenticatedUser;
 import com.voltor.futureleave.security.UserDetailsServiceImpl;
 import com.voltor.futureleave.security.jwt.JwtService;
@@ -123,7 +123,7 @@ public class AuthenticationControllerTest {
 	public void shouldReturnToken() throws Exception {
 		AuthenticatedUser authenticatedUser = AuthenticatedUserBuilder.start().build();
 		given( authenticationManager.authenticate( any() ) )
-				.willReturn( new UsernamePasswordAuthenticationToken( authenticatedUser.getClientId(), "bla" ) );
+				.willReturn( new UsernamePasswordAuthenticationToken( authenticatedUser.getUsername(), "bla" ) );
 
 		AuthenticationResponse response = mockAuthenticationResponse();
 
@@ -139,13 +139,13 @@ public class AuthenticationControllerTest {
 	public void shouldRefreshToken() throws Exception {
 		String refreshToken = "t63567otyj&&&&keneshterstan";
 
-		AuthData authData = AuthDataBuilder.start().build(); 
-		when( refreshTokenService.getTokenData( "someToken" ) ).thenReturn( authData );
+		User user = UserBuilder.start().build(); 
+		when( refreshTokenService.getTokenData( "someToken" ) ).thenReturn( user );
 
 		List< GrantedAuthority > authorityList = new ArrayList<>();
 		authorityList.add( new SimpleGrantedAuthority( "ROLE_SUPPORT" ) );
 
-		when( userDetailsService.authenticateUser( authData ) )
+		when( userDetailsService.authenticateUser( user ) )
 				.thenReturn( AuthenticatedUserBuilder.start().role( Role.SESSION_USER ).build() );
 
 		AuthenticationResponse response = mockAuthenticationResponse();

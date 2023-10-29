@@ -1,7 +1,9 @@
 package com.voltor.futureleave.dao;
 
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.voltor.futureleave.dao.specification.SpecificationUtil;
 import com.voltor.futureleave.jpa.PrimaryRepository;
 import com.voltor.futureleave.jpa.UserRepository;
 import com.voltor.futureleave.model.User;
@@ -22,4 +24,9 @@ public class UserDao extends AbstractIdentifiableDao< User > {
 		return repository;
 	}
 
+	@Override
+	protected Specification< User > addSpecifications( boolean includeArchivedEntities ) {
+		return SpecificationUtil.initEmptySpec();
+	}
+	
 }

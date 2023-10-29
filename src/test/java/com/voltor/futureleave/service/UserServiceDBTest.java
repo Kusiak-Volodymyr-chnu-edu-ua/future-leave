@@ -53,6 +53,15 @@ class UserServiceDBTest extends AbstractServiceDBTest{
 		user.setId( 0L );
 		assertFalse( userService.isLoginUnique( user ) );
 	}
-
-
+	
+	@Test
+	void findByLogin() {
+		User user = userBuilder.toDB();
+		userBuilder.toDB();
+		userBuilder.toDB();
+		logoff();
+		User result = userService.findByLogin( user.getLogin() );
+		assertEquals(user, result);
+	}
+	
 }
