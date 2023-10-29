@@ -80,7 +80,6 @@ public abstract class AbstractCRUDControllerTest<
 		resultCaptor = new ResultCaptor<>();
 	}
 	
-	
 	@Test
 	public void testItemCreation() throws Exception {
 		
@@ -419,7 +418,8 @@ public abstract class AbstractCRUDControllerTest<
 		MockHttpServletRequestBuilder mockHttpServletRequestBuilder = get( getControllerPath() );
 		filteringValues.forEach( filteringValue -> mockHttpServletRequestBuilder.param( "search", filteringValue ) );
 
-		ArgumentCaptor< List< SearchCriteria > > createriasCaptor = ArgumentCaptor.forClass( expectedSearchCriterias.getClass() );
+		ArrayList< SearchCriteria > listClassObjsct = new ArrayList<>();
+		ArgumentCaptor< List< SearchCriteria > > createriasCaptor = ArgumentCaptor.forClass( listClassObjsct.getClass() );
 		try {
 			mvc.perform( mockHttpServletRequestBuilder )
 					.andExpect( status().isOk() );

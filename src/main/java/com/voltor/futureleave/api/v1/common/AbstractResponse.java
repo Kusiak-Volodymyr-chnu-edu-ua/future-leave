@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public abstract class AbstractResponse {
 
 	@Schema( 
-			description = "The bcId of the record<br/>"
+			description = "The id of the record<br/>"
 					+ "Sortable",
 			example = "228322" )
 	private Long id;

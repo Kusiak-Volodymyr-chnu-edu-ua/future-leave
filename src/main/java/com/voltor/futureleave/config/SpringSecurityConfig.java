@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsUtils;
 
 import com.voltor.futureleave.api.v1.ApiConstants;
@@ -48,13 +49,17 @@ public class SpringSecurityConfig {
 
 		http.authorizeHttpRequests(authorize -> 
 			authorize
-				.requestMatchers( ApiConstants.API_PREFIX + ApiConstants.AUTHENTICATION_ENDPOINT,
-						ApiConstants.API_PREFIX + ApiConstants.REFRESH_TOKEN_ENDPOINT,
-						"/info", "/health" )
+				.requestMatchers( 
+						AntPathRequestMatcher.antMatcher( ApiConstants.API_PREFIX + ApiConstants.AUTHENTICATION_ENDPOINT ),
+						AntPathRequestMatcher.antMatcher( ApiConstants.API_PREFIX + ApiConstants.REFRESH_TOKEN_ENDPOINT ),
+						AntPathRequestMatcher.antMatcher( "/info" ),
+						AntPathRequestMatcher.antMatcher( "/health" ) )
 				.permitAll()
 				.requestMatchers( CorsUtils::isPreFlightRequest ).permitAll()
-				.requestMatchers( ApiConstants.API_PREFIX + MATCHES_ALL_PATHS )
-					.hasAnyRole( Role.ROOT.name(), Role.SESSION_USER.name() ) );
+				.requestMatchers( AntPathRequestMatcher.antMatcher( ApiConstants.API_PREFIX + MATCHES_ALL_PATHS ) )
+					.hasAnyRole( 
+							Role.ROOT.name(), 
+							Role.SESSION_USER.name() ) );
 		return http.build();
 	}
 

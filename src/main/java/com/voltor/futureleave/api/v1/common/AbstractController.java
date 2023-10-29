@@ -150,7 +150,7 @@ public abstract class AbstractController<
 	}
 
 	@GetMapping(path = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-	@Operation(summary = "Retrieve a specific record by BcID",
+	@Operation(summary = "Retrieve a specific record by id",
 			description = "This operation retrieves specific record of current entity from database\n" +
 					"- <b>expand_fields</b> - is used to specify the entity fields that need to be included in the response.\n" +
 					"- <b>id</b> - is used to specify the identification number of record which must be returned.")
@@ -186,8 +186,8 @@ public abstract class AbstractController<
 	@PutMapping(path = "/{id}",
 			consumes = {MediaType.APPLICATION_JSON_VALUE},
 			produces = {MediaType.APPLICATION_JSON_VALUE})
-	@Operation(summary = "Update a specific record, based on the BcID", 
-		description = "Update a specific record, based on the BcID<br>"
+	@Operation(summary = "Update a specific record, based on the id", 
+		description = "Update a specific record, based on the id<br>"
 				+ "All values will be replaced by the input data")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "404", description = "The record to be updated does not exist."),
@@ -198,7 +198,7 @@ public abstract class AbstractController<
 	public ApiResponseType updateRecord(@PathVariable(value = "id") Long id,
 										@Validated({UpdateValidationGroup.class, Default.class}) @RequestBody RequestType request,
 										HttpServletResponse response) {
-		T entity = getByBcID( id );
+		T entity = getByID( id );
 		
 		request.updateEntity( entity );
 
@@ -223,7 +223,7 @@ public abstract class AbstractController<
 	@PatchMapping(path = "/{id}",
 			consumes = {MediaType.APPLICATION_JSON_VALUE},
 			produces = {MediaType.APPLICATION_JSON_VALUE})
-	@Operation(summary = "Patch a specific record, based on the BcID")
+	@Operation(summary = "Patch a specific record, based on the id")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "404", description = "The request was empty"),
 			@ApiResponse(responseCode = "404", description = "The record to be patched does not exist."),
@@ -234,7 +234,7 @@ public abstract class AbstractController<
 			@PathVariable(value = "id") Long id, @RequestBody Map<String, Object> request,
 			HttpServletResponse response) {
 		BaseControllerUtil.checkPatchRequest(request);
-		T entity = getByBcID( id );
+		T entity = getByID( id );
 		
 		patchFields(entity, request);
 
@@ -256,13 +256,13 @@ public abstract class AbstractController<
 		throw LocalizedExceptionUtil.buildHttpRequestMethodNotSupportedException("PATCH");
 	}
 
-	@Operation( summary = "Delete record by BcID" )
+	@Operation( summary = "Delete record by id" )
 	@DeleteMapping(path = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseBody
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteRecord(@PathVariable(value = "id") Long id,
 							 HttpServletResponse response) {
-		T entity = getByBcID( id );
+		T entity = getByID( id );
 		getService().delete(entity.getId());
 	}
 	
@@ -319,7 +319,7 @@ public abstract class AbstractController<
 		return conversionService.convert( value, filterableProperty.getExpectedType() );
 	} 
 
-	private T getByBcID( Long id ) {
+	private T getByID( Long id ) {
 		return BaseControllerUtil.getObjectOrNotFound(getService().getOne( id ), id, getEntityClass());
 	}
 

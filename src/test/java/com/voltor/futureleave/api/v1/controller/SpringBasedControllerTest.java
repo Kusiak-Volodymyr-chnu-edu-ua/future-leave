@@ -17,7 +17,7 @@ import com.voltor.futureleave.config.SpringSecurityConfig;
 import com.voltor.futureleave.config.ValidatorConfig;
 import com.voltor.futureleave.security.DummySecurityConfiguration;
 
-@WithMockUser(roles = { "SUPPORT" })
+@WithMockUser(roles = { "SESSION_USER" })
 @ActiveProfiles(profiles = { "develop" })
 @Import({ ValidatorConfig.class, DummySecurityConfiguration.class, SpringSecurityConfig.class,
 		MappingJackson2HttpMessageConverter.class })
