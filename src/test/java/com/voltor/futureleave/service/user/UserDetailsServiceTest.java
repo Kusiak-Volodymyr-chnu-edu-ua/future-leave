@@ -12,17 +12,17 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import com.voltor.futureleave.builder.AuthDataBuilder;
-import com.voltor.futureleave.model.AuthData;
+import com.voltor.futureleave.builder.UserBuilder;
 import com.voltor.futureleave.model.Role;
+import com.voltor.futureleave.model.User;
 import com.voltor.futureleave.security.AuthenticatedUser;
 import com.voltor.futureleave.security.UserDetailsServiceImpl;
-import com.voltor.futureleave.service.AuthDataService;
+import com.voltor.futureleave.service.UserService;
 
 public class UserDetailsServiceTest {
 	
 	@Mock
-	private AuthDataService authDataService;
+	private UserService userService;
 	 
 	@InjectMocks
 	private UserDetailsServiceImpl userDetailsService;
@@ -30,21 +30,20 @@ public class UserDetailsServiceTest {
 	@BeforeEach
 	public void setup() throws Exception {
 		MockitoAnnotations.openMocks(this).close();
-		userDetailsService = new UserDetailsServiceImpl( authDataService );
+		userDetailsService = new UserDetailsServiceImpl( userService );
 	}
 
 	@Test
 	public void testSessionUserRoleAuthority() {
-		AuthData authData = AuthDataBuilder.start().build();
-		given( authDataService.findByClientId( anyString() ) ).willReturn( authData );
+		User user = UserBuilder.start().build();
+		given( userService.findByLogin( anyString() ) ).willReturn( user );
 
-		AuthenticatedUser ud = (AuthenticatedUser) userDetailsService.loadUserByUsername( authData.getClientId() );
+		AuthenticatedUser ud = (AuthenticatedUser) userDetailsService.loadUserByUsername( user.getLogin() );
 		 
 		
 		assertEquals( Role.SESSION_USER, ud.getRole() );
 
-		assertEquals( authData.getSessionId(), ud.getSessionId() );
-		assertEquals( authData.getClientId(), ud.getClientId() ); 
+		assertEquals( user, ud.getUser() );
 
 		assertTrue( ud.getAuthorities().contains( new SimpleGrantedAuthority( "ROLE_SESSION_USER" ) ) );
 	}

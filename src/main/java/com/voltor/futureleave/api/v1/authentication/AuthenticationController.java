@@ -1,8 +1,5 @@
 package com.voltor.futureleave.api.v1.authentication;
 
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.constraints.NotEmpty;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.voltor.futureleave.api.v1.ApiConstants;
-import com.voltor.futureleave.model.AuthData;
+import com.voltor.futureleave.model.User;
 import com.voltor.futureleave.security.UserDetailsServiceImpl;
 import com.voltor.futureleave.security.jwt.JwtService;
 import com.voltor.futureleave.security.jwt.exception.JwtExpirationException;
@@ -24,6 +21,8 @@ import com.voltor.futureleave.service.AuthenticatedUserService;
 import com.voltor.futureleave.service.RefreshTokenService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.NotEmpty;
 
 @Controller
 @RequestMapping( AuthenticationController.API_URL )
@@ -82,7 +81,7 @@ public class AuthenticationController {
 	@ResponseBody
 	public AuthenticationResponse refreshToken(@RequestParam @NotEmpty String refreshToken) {
 		validateRefreshToken(refreshToken);
-		AuthData user = refreshTokenService.getTokenData(refreshToken);
+		User user = refreshTokenService.getTokenData(refreshToken);
 		userAuthorizationService.authenticateUser( userDetailsService.authenticateUser( user ) );
 		return buildAuthenticationResponse();
 	}

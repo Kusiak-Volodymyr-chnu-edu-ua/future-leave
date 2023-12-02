@@ -16,13 +16,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.data.jpa.domain.Specification;
 
-import com.voltor.futureleave.builder.AuthDataBuilder;
 import com.voltor.futureleave.builder.AuthenticatedUserBuilder;
 import com.voltor.futureleave.builder.RefreshTokenBuilder;
+import com.voltor.futureleave.builder.UserBuilder;
 import com.voltor.futureleave.dao.RefreshTokenDao;
-import com.voltor.futureleave.model.AuthData;
 import com.voltor.futureleave.model.RefreshToken;
 import com.voltor.futureleave.model.Role;
+import com.voltor.futureleave.model.User;
 import com.voltor.futureleave.service.exception.RefreshTokenNotFoundException;
 
 public class RefreshTokenServiceTest extends BaseDaoServiceTest< RefreshToken, RefreshTokenService, RefreshTokenDao > {
@@ -34,11 +34,12 @@ public class RefreshTokenServiceTest extends BaseDaoServiceTest< RefreshToken, R
 	private RefreshTokenDao refreshTokenDao;
 	
 	@Mock
-	private AuthDataService authDataService;
+	private UserService userService;
 
 	@Override
 	public void additionalSetup() {
-
+		User currentUser = userAuthorizationService.getCurrentUser();
+		when( userService.getOne( currentUser.getId() ) ).thenReturn( currentUser );
 	}
 
 	@Override
@@ -53,31 +54,31 @@ public class RefreshTokenServiceTest extends BaseDaoServiceTest< RefreshToken, R
 
 	@Override
 	public RefreshToken createEntity() {
-		return RefreshTokenBuilder.start().setSessionId( userAuthorizationService.getSessionId() ).build();
+		return RefreshTokenBuilder.start().setUser( userAuthorizationService.getCurrentUser() ).build();
 	}
 
 	@Test
 	public void setCurrentSessionTest() {
 		given( getDao().create( any() ) ).willAnswer( i -> i.getArguments()[0] );
 		RefreshToken refreshToken = getService().create( createEntity() );
-		assertEquals( userAuthorizationService.getSessionId(), refreshToken.getSessionId() );
+		assertEquals( userAuthorizationService.getCurrentUser(), refreshToken.getUser() );
 	}
 
 	@Test
 	@SuppressWarnings("unchecked")
 	public void returnAuthDatAndDeleteTest() {
-		AuthData authData = AuthDataBuilder.start().build();
-		AuthenticatedUserBuilder.start().role( Role.SESSION_USER ).authData( authData ).mock( userAuthorizationService );
-		when( authDataService.findSessionId( userAuthorizationService.getSessionId() ) )
-			.thenReturn( authData );
+		User user = UserBuilder.start().build();
+		AuthenticatedUserBuilder.start().role( Role.SESSION_USER ).user( user ).mock( userAuthorizationService );
+		when( userService.findByLogin( userAuthorizationService.getCurrentUser().getLogin() ) )
+			.thenReturn( user );
 		
 		RefreshToken refreshToken = createEntity();
 		
 		when( getDao().getOne( any( Specification.class ) ) ).thenReturn( refreshToken );
 		when( getDao().getOne( refreshToken.getId() ) ).thenReturn( refreshToken );
 		
-		AuthData tokenData = getService().getTokenData( "someToken" );
-		assertEquals( refreshToken.getSessionId(), tokenData.getSessionId() );
+		User result = getService().getTokenData( "someToken" );
+		assertEquals( refreshToken.getUser(), result );
 		verify( getDao() ).delete( eq( refreshToken), anyBoolean() );
 	}
 

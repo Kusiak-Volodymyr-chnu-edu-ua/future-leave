@@ -9,14 +9,14 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import com.voltor.futureleave.model.AuthData;
 import com.voltor.futureleave.model.Role;
+import com.voltor.futureleave.model.User;
 import com.voltor.futureleave.security.AuthenticatedUser;
 import com.voltor.futureleave.service.AuthenticatedUserService;
 
 public class AuthenticatedUserBuilder {
 
-	private AuthData authData; 
+	private User user; 
 	private Role role;
 
 	public AuthenticatedUserBuilder() {
@@ -24,20 +24,22 @@ public class AuthenticatedUserBuilder {
 	}
 	
 	public AuthenticatedUser build() {
-    	AuthData authData = this.authData;
+    	User user = this.user;
     	Role role = this.role;
+    	user.setUserRole(role);
 		List<GrantedAuthority> authorityList = List.of( new SimpleGrantedAuthority("ROLE_" + role) );
-		AuthenticatedUser authenticatedUser = new AuthenticatedUser( authData, role, true, true, true, true, authorityList );
+		AuthenticatedUser authenticatedUser = new AuthenticatedUser( user, role, true, true, true, true, authorityList );
 		initDefaultData();
 		return authenticatedUser;
 	}
 	
 	public AuthenticatedUser mock( AuthenticatedUserService userAuthorizationService ) {
-		AuthenticatedUser user = build();
+		AuthenticatedUser authUser = build();
 		given( userAuthorizationService.isRoot() ).willReturn( Role.ROOT.equals( role ) );
 		given( userAuthorizationService.isSupport() ).willReturn( Role.SESSION_USER.equals( role ) );
-		given( userAuthorizationService.getSessionId() ).willReturn( user.getSessionId() );
-		return user;
+		given( userAuthorizationService.getCurrentUser() ).willReturn( user );
+		given( userAuthorizationService.getCurrentUserId() ).willReturn( user.getId() );
+		return authUser;
 	}
 	
 	public void login() {
@@ -52,27 +54,17 @@ public class AuthenticatedUserBuilder {
 	}
 
 	private void initDefaultData() {
-		this.authData = AuthDataBuilder.start().build();
+		this.user = UserBuilder.start().build();
 		this.role = Role.ROOT;
 	}
-	
-	public AuthenticatedUserBuilder clientId( String clientId ) {
-		authData.setClientId( clientId );
-		return this;		
-	}
-	
+	 
 	public AuthenticatedUserBuilder role( Role role ) {
 		this.role = role;
 		return this;		
 	}
-	
-	public AuthenticatedUserBuilder sessionId( Long sessionId ) {
-		authData.setSessionId( sessionId );
-		return this;		
-	}
-	
-	public AuthenticatedUserBuilder authData( AuthData authData) {
-		this.authData = authData;
+	 
+	public AuthenticatedUserBuilder user( User user ) {
+		this.user = user;
 		return this;		
 	}
 	

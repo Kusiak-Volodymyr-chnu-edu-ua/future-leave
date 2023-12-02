@@ -7,25 +7,30 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import com.voltor.futureleave.model.Role;
+import com.voltor.futureleave.model.User;
 import com.voltor.futureleave.security.AuthenticatedUser;
 import com.voltor.futureleave.service.exception.NoCurrentUserException;
 
 @Service
 public class AuthenticatedUserService {
-
+	
 	public boolean isRoot() {
-		return Role.ROOT.equals( currentUser().getRole() );
+		return Role.ROOT.equals( getCurrentAuthUser().getRole() );
 	}
 
 	public boolean isSupport() {
-		return Role.SESSION_USER.equals( currentUser().getRole() );
+		return Role.SESSION_USER.equals( getCurrentAuthUser().getRole() );
 	}
 	
-	public Long getSessionId() {
-		return currentUser().getSessionId();
+	public User getCurrentUser() {
+		return getCurrentAuthUser().getUser();
+	}
+	
+	public Long getCurrentUserId() {
+		return getCurrentUser().getId();
 	}
 
-	private AuthenticatedUser currentUser() throws NoCurrentUserException {
+	private AuthenticatedUser getCurrentAuthUser() throws NoCurrentUserException {
 		final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
 		if (authentication == null) {

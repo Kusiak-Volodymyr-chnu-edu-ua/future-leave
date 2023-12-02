@@ -47,21 +47,21 @@ public class UserAuthorizationServiceTest {
 	@Test
 	public void noAuthenticationTest() {
 		given( securityContext.getAuthentication() ).willReturn( null );
-		assertThrows( NoCurrentUserException.class, () -> userAuthorizationService.getSessionId() );
+		assertThrows( NoCurrentUserException.class, () -> userAuthorizationService.getCurrentUser() );
 	}
 
 	@Test
 	public void wrongAuthenticationTest() {
 		Object objectWithWrongPrincipalType = new Object();
 		given( securityContext.getAuthentication().getPrincipal() ).willReturn( objectWithWrongPrincipalType );
-		assertThrows( NoCurrentUserException.class, () -> userAuthorizationService.getSessionId() );
+		assertThrows( NoCurrentUserException.class, () -> userAuthorizationService.getCurrentUser() );
 	}
 
 	@Test
 	public void rightAuthenticationTest() {
 		AuthenticatedUser build = AuthenticatedUserBuilder.start().build();
 		given( authentication.getPrincipal() ).willReturn( build );
-		assertNotNull( userAuthorizationService.getSessionId() );
+		assertNotNull( userAuthorizationService.getCurrentUser() );
 	}
 
 	@Test

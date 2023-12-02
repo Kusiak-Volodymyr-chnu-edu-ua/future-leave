@@ -11,40 +11,32 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.voltor.futureleave.model.AuthData;
 import com.voltor.futureleave.model.Role;
-import com.voltor.futureleave.service.AuthDataService;
+import com.voltor.futureleave.model.User;
+import com.voltor.futureleave.service.UserService;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
  
-	private AuthDataService authDataService;
+	private UserService userService;
 	
-	public UserDetailsServiceImpl( AuthDataService authDataService ) {
-		this.authDataService = authDataService;
+	public UserDetailsServiceImpl( UserService userService ) {
+		this.userService = userService;
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public UserDetails loadUserByUsername(final String clientId ) throws UsernameNotFoundException {
-		final AuthData authData = authDataService.findByClientId( clientId );
+	public UserDetails loadUserByUsername(final String login ) throws UsernameNotFoundException {
+		final User authData = userService.findByLogin( login );
 		if( authData==null ) {
 			throw new UsernameNotFoundException("User for email address not found");
 		}
 
 		return authenticateUser(authData);
 	}
+	 
 	
-	public UserDetails loadSessionUserBySessionId(final Long sessionId ) throws UsernameNotFoundException {
-		final AuthData authData = authDataService.findSessionId( sessionId );
-		if( authData==null ) {
-			throw new UsernameNotFoundException("User for email address not found");
-		}
-
-		return authenticateUser(authData);
-	}
-
-	public UserDetails authenticateUser(AuthData authData) {
+	public UserDetails authenticateUser(User authData) {
 		Role role = Role.SESSION_USER;
 		List<GrantedAuthority> authorityList = new ArrayList<>(); 
 		authorityList.add(new SimpleGrantedAuthority("ROLE_" + role) );

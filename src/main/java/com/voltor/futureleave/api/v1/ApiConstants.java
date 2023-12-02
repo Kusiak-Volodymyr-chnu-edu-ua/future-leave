@@ -12,5 +12,6 @@ public class ApiConstants {
 	// Endpoints
 	public static final String AUTHENTICATION_ENDPOINT = "/login";
 	public static final String REFRESH_TOKEN_ENDPOINT = "/refresh";
-	public static final String V1_VEHICLES_ENDPOINT = API_PREFIX + API_VERSION_V1 + "/vehicles";
+	public static final String V1_SESSION_ENDPOINT = API_PREFIX + API_VERSION_V1 + "/sessions";
+	public static final String V1_PERIOD_ENDPOINT = API_PREFIX + API_VERSION_V1 + "/periods";
 }

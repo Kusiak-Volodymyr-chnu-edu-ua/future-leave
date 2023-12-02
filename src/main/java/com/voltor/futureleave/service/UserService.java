@@ -46,4 +46,8 @@ public class UserService extends AbstractService< User > {
 		return !getDao().existsIncludingArchived( loginFilter.and( idFilter ), true ); 
 	}
 	
+	public User findByLogin( String login ) {
+		Specification< User > specification = new EqualSpecification<>( "login", login ); 
+		return dao.getOne( specification );
+	}
 }
