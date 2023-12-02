@@ -28,7 +28,7 @@ public class WebConfig implements WebMvcConfigurer {
 	@Autowired
 	private ObjectMapper objectMapper;
 
-	@Value("${org.sample.web.enable_production_mode}")
+	@Value("${com.voltor.futureleave.enable_production_mode}")
 	private Boolean enableProductionMode;
 
 	@Override

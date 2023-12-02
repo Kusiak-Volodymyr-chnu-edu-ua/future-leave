@@ -1,6 +1,6 @@
 useSwagger: true
 
-org.sample.web:
+com.voltor.futureleave:
       enable_production_mode: false
       jwt:
         jwtKey: asdaffgdf

@@ -1,4 +1,4 @@
-org.sample.web:
+com.voltor.futureleave:
       enable_production_mode: false
       jwt:
         jwtKey: d5sdf54fd

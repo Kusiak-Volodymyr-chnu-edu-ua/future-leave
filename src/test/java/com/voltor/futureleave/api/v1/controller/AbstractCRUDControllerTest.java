@@ -43,11 +43,13 @@ import org.mockito.Mockito;
 import org.mockito.stubbing.OngoingStubbing;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -64,7 +66,7 @@ import com.voltor.futureleave.filtering.searchcriteria.SearchCriteria;
 import com.voltor.futureleave.localization.LocalizedException;
 import com.voltor.futureleave.model.Identifiable;
 import com.voltor.futureleave.service.AbstractService;
-
+ 
 public abstract class AbstractCRUDControllerTest<
 		Entity extends Identifiable,
 		Request extends AbstractRequest< Entity >,

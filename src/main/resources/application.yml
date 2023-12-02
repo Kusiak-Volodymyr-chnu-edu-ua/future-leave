@@ -28,7 +28,7 @@ spring:
     serialization:
       INDENT_OUTPUT: true
 
-org.sample.web:
+com.voltor.futureleave:
       enable_production_mode: true
       items:
         maxСount: 100

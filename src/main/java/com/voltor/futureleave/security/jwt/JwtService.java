@@ -32,13 +32,13 @@ public class JwtService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger( JwtService.class );
 
-	@Value("${org.sample.web.jwt.jwtKey}")
+	@Value("${com.voltor.futureleave.jwt.jwtKey}")
 	private String jwtKey;
 
-	@Value("${org.sample.web.jwt.accessTokenExpirationInMinutes}")
+	@Value("${com.voltor.futureleave.jwt.accessTokenExpirationInMinutes}")
 	private Integer accessTokenExpirationInMinutes;
 
-	@Value("${org.sample.web.jwt.refreshTokenExpirationInMinutes}")
+	@Value("${com.voltor.futureleave.jwt.refreshTokenExpirationInMinutes}")
 	private Integer refreshTokenExpirationInMinutes;
 
 	private Algorithm algorithm;
