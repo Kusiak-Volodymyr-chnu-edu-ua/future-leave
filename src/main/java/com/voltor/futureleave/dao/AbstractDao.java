@@ -20,14 +20,15 @@ import com.voltor.futureleave.dao.specification.SubclassEqualSpecification;
 import com.voltor.futureleave.filtering.predicate.EqualStringSpecification;
 import com.voltor.futureleave.filtering.session.ArchivedSpecification;
 import com.voltor.futureleave.filtering.session.IdSpecification;
+import com.voltor.futureleave.filtering.user.UserSpecification;
 import com.voltor.futureleave.jpa.PrimaryRepository;
 import com.voltor.futureleave.localization.LocalizedExceptionCode;
 import com.voltor.futureleave.localization.LocalizedMessage;
 import com.voltor.futureleave.model.Archivable;
 import com.voltor.futureleave.model.Identifiable;
 import com.voltor.futureleave.model.PrimaryEntity;
-import com.voltor.futureleave.model.Session;
-import com.voltor.futureleave.model.SessionTenencyEntity;
+import com.voltor.futureleave.model.User;
+import com.voltor.futureleave.model.UserTenencyEntity;
 import com.voltor.futureleave.service.AuthenticatedUserService;
 import com.voltor.futureleave.service.exception.RetrievalNotAllowedException;
 
@@ -332,11 +333,6 @@ public abstract class AbstractDao<IdType, T extends PrimaryEntity<IdType>> {
 	 * @return The created entity.
 	 */
 	public T create(T entity) {
-
-//		if (userAuthorizationService.isSupport() && entity instanceof SessionTenencyEntity) {
-//			((SessionTenencyEntity) entity).setSessionId( userAuthorizationService.getSessionId() );
-//		}
-
 		return getRepository().save(entity);
 	}
 
@@ -407,14 +403,14 @@ public abstract class AbstractDao<IdType, T extends PrimaryEntity<IdType>> {
 	protected Specification< T > addSpecifications( boolean includeArchivedEntities ) {
 		Specification< T > specification = SpecificationUtil.initEmptySpec();
 
-		if ( entityIsSession() ) {
+		if ( entityIsUser() ) {
 			return specification;
 		}
-
-		if ( entityIsExtendedBySession() ) {
-//			Long currentSession = userAuthorizationService.getSessionId();
-//			SessionSpecification< T > sessionSpecification = new SessionSpecification<>( currentSession );
-//			specification = specification.and( sessionSpecification );
+		
+		if ( entityIsExtendedByUser() && !userAuthorizationService.isRoot() ) {
+			Long currentUserId = userAuthorizationService.getCurrentUserId();
+			UserSpecification< T > sessionSpecification = new UserSpecification<>( currentUserId );
+			specification = specification.and( sessionSpecification );
 		}
 
 		if ( !includeArchivedEntities && entityIsArchived() ) {
@@ -439,9 +435,9 @@ public abstract class AbstractDao<IdType, T extends PrimaryEntity<IdType>> {
 		return (Class<T>[]) GenericTypeResolver.resolveTypeArguments(getClass(), AbstractDao.class);
 	}
 
-	private boolean entityIsSession() {
+	private boolean entityIsUser() {
 		Class<T>[] entityTypeClasses = getEntityTypeClasses();
-		return entityTypeClasses[0].equals(Session.class);
+		return entityTypeClasses[0].equals(User.class);
 	}
 
 	private boolean entityIsArchived() {
@@ -449,9 +445,8 @@ public abstract class AbstractDao<IdType, T extends PrimaryEntity<IdType>> {
 		return Archivable.class.isAssignableFrom(entityTypeClasses[0]);
 	}
 
-	private boolean entityIsExtendedBySession() {
+	private boolean entityIsExtendedByUser() {
 		Class<T>[] entityTypeClasses = getEntityTypeClasses();
-		return SessionTenencyEntity.class.isAssignableFrom(entityTypeClasses[0]);
+		return UserTenencyEntity.class.isAssignableFrom(entityTypeClasses[0]);
 	}
-
 }
