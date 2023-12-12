@@ -8,8 +8,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -29,11 +27,6 @@ public class SpringSecurityConfig {
 
 	@Autowired
 	protected JwtService jwtService;
-	
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return SCryptPasswordEncoder.defaultsForSpringSecurity_v5_8();
-	}
 
 	@Bean
 	public SecurityFilterChain filterChain( HttpSecurity http ) throws Exception {
@@ -53,7 +46,7 @@ public class SpringSecurityConfig {
 						AntPathRequestMatcher.antMatcher( ApiConstants.API_PREFIX + ApiConstants.AUTHENTICATION_ENDPOINT ),
 						AntPathRequestMatcher.antMatcher( ApiConstants.API_PREFIX + ApiConstants.REFRESH_TOKEN_ENDPOINT ),
 						AntPathRequestMatcher.antMatcher( "/info" ),
-						AntPathRequestMatcher.antMatcher( "/health" ) )
+						AntPathRequestMatcher.antMatcher( "/**" ) )
 				.permitAll()
 				.requestMatchers( CorsUtils::isPreFlightRequest ).permitAll()
 				.requestMatchers( AntPathRequestMatcher.antMatcher( ApiConstants.API_PREFIX + MATCHES_ALL_PATHS ) )

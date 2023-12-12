@@ -20,8 +20,19 @@ public class RefreshTokenDao extends AbstractIdentifiableDao<RefreshToken> {
 	}
 
 	@Override
+	public boolean isEditAllowed(RefreshToken item) {
+		return true;
+	}
+	
+	@Override
 	protected PrimaryRepository<Long, RefreshToken> getRepository() {
 		return refreshTokenRepository;
 	}
+	
+	@Override
+	protected boolean entityIsExtendedByUser() {
+		return false;
+	}
+
 
 }

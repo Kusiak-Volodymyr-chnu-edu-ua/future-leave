@@ -2,8 +2,8 @@ package com.voltor.futureleave.config;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import org.springdoc.core.GroupedOpenApi;
-import org.springdoc.core.customizers.OpenApiCustomiser;
+import org.springdoc.core.customizers.OpenApiCustomizer;
+import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -31,7 +31,7 @@ public class SwaggerConfig {
 		return GroupedOpenApi.builder()
 				.group( "Actual" )
 				.pathsToMatch( "/**" )
-				.addOpenApiCustomiser( customerGlobalHeaderOpenApiCustomiser() )
+				.addOpenApiCustomizer( customerGlobalHeaderOpenApiCustomiser() )
 				.build();
 	}
 	 
@@ -45,7 +45,7 @@ public class SwaggerConfig {
 								.url( "http://springdoc.org" ) ) );
 	}
 	 
-	public OpenApiCustomiser customerGlobalHeaderOpenApiCustomiser() {
+	public OpenApiCustomizer customerGlobalHeaderOpenApiCustomiser() {
 		return openApi -> openApi.getPaths().values().forEach( pathItem -> {
 			this.addDefaultDeleteResponse( pathItem.getDelete() );
 			this.addDefaultPostResponse( pathItem.getPost() );

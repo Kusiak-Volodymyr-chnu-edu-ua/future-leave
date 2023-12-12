@@ -407,7 +407,7 @@ public abstract class AbstractDao<IdType, T extends PrimaryEntity<IdType>> {
 			return specification;
 		}
 		
-		if ( entityIsExtendedByUser() && !userAuthorizationService.isRoot() ) {
+		if ( entityIsExtendedByUser() && userAuthorizationService.isSupport() ) {
 			Long currentUserId = userAuthorizationService.getCurrentUserId();
 			UserSpecification< T > sessionSpecification = new UserSpecification<>( currentUserId );
 			specification = specification.and( sessionSpecification );
@@ -435,17 +435,17 @@ public abstract class AbstractDao<IdType, T extends PrimaryEntity<IdType>> {
 		return (Class<T>[]) GenericTypeResolver.resolveTypeArguments(getClass(), AbstractDao.class);
 	}
 
-	private boolean entityIsUser() {
+	protected boolean entityIsUser() {
 		Class<T>[] entityTypeClasses = getEntityTypeClasses();
 		return entityTypeClasses[0].equals(User.class);
 	}
 
-	private boolean entityIsArchived() {
+	protected boolean entityIsArchived() {
 		Class<T>[] entityTypeClasses = getEntityTypeClasses();
 		return Archivable.class.isAssignableFrom(entityTypeClasses[0]);
 	}
 
-	private boolean entityIsExtendedByUser() {
+	protected boolean entityIsExtendedByUser() {
 		Class<T>[] entityTypeClasses = getEntityTypeClasses();
 		return UserTenencyEntity.class.isAssignableFrom(entityTypeClasses[0]);
 	}

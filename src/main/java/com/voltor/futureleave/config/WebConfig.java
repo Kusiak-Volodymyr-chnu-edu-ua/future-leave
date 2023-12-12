@@ -6,11 +6,14 @@ import jakarta.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.retry.annotation.EnableRetry;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -72,6 +75,11 @@ public class WebConfig implements WebMvcConfigurer {
 
 	public static boolean isProductionMode() {
 		return productionMode;
+	} 
+	
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return SCryptPasswordEncoder.defaultsForSpringSecurity_v5_8();
 	}
 	
 }

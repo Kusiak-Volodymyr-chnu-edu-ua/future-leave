@@ -7,7 +7,13 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.voltor.futureleave.api.v1.ApiConstants;
@@ -19,7 +25,9 @@ import com.voltor.futureleave.filtering.predicate.PeriodSpecificationBuilder;
 import com.voltor.futureleave.model.Period;
 import com.voltor.futureleave.service.AbstractService;
 import com.voltor.futureleave.service.PeriodService;
+import com.voltor.futureleave.service.ai.Trainer;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
@@ -36,6 +44,9 @@ public class PeriodController extends AbstractController<Period, PeriodRequest, 
 	
 	@Autowired
 	private PeriodService service;
+	
+	@Autowired
+	private Trainer trainer;
 	 
 	private Validator validator;
 	
@@ -109,5 +120,17 @@ public class PeriodController extends AbstractController<Period, PeriodRequest, 
 		}
 		throw new PatchFieldConstraintViolationException( validationResult );
 	}
+	
+	@PostMapping( path = "/predict",
+			consumes = {MediaType.APPLICATION_JSON_VALUE},
+			produces = {MediaType.APPLICATION_JSON_VALUE})
+	@Operation(summary = "Create record")
+	@ResponseBody
+	@ResponseStatus( HttpStatus.OK )
+	public PeriodRequest createRecord( @RequestBody PeriodRequest request ) {
+		request.setUnplannedEventsCount(  Integer.valueOf( trainer.getPredict(request.createEntity() )  ));
+		return request;
+	}
+
 
 }

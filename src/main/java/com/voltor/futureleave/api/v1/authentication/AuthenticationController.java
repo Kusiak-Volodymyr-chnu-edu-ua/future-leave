@@ -22,11 +22,13 @@ import com.voltor.futureleave.service.RefreshTokenService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotEmpty;
 
 @Controller
 @RequestMapping( AuthenticationController.API_URL )
 @Tag( name = "Authentication" )
+@Transactional
 public class AuthenticationController {
 
 	public static final String API_URL = ApiConstants.API_PREFIX;
